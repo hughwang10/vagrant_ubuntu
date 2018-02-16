@@ -16,15 +16,19 @@ Vagrant.configure("2") do |config|
 
   config.vm.define vm_name = "node1" do |node1|
     node1.vm.hostname = "n1"
+    node1.vm.network :private_network, ip: "192.168.121.201"
+    node1.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
   end
 
   config.vm.define vm_name = "node2" do |node2|
     node2.vm.hostname = "n2"
+    node2.vm.network :private_network, ip: "192.168.121.202"
   end
 
   config.vm.define vm_name = "node3" do |node3|
     node3.vm.hostname = "n3"
-  end    
+    node3.vm.network :private_network, ip: "192.168.121.203"
+  end
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -77,12 +81,10 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y docker.io
+    apt-get install -qy docker.io
     apt-get update && apt-get install -y apt-transport-https
     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-    cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-    deb http://apt.kubernetes.io/ kubernetes-xenial main
-    EOF
+    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
     apt-get update
     apt-get install -y kubelet kubeadm kubectl
   SHELL
