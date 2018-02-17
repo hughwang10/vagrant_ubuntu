@@ -5,6 +5,26 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+$common_script = <<SCRIPT
+apt-get update
+apt-get install -qy docker.io
+apt-get update && apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+SCRIPT
+
+$ctrl_script = <<SCRIPT
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.121.201
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+kubectl taint nodes --all node-role.kubernetes.io/master
+SCRIPT
+
 Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -17,7 +37,8 @@ Vagrant.configure("2") do |config|
   config.vm.define vm_name = "c1" do |c1|
     c1.vm.hostname = "n1"
     c1.vm.network :private_network, ip: "192.168.121.201"
-    # c1.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
+    c1.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
+    c1.vm.provision "shell", inline: $ctrl_script
   end
 
   config.vm.define vm_name = "w1" do |w1|
@@ -79,13 +100,5 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
-    apt-get install -qy docker.io
-    apt-get update && apt-get install -y apt-transport-https
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
-    apt-get update
-    apt-get install -y kubelet kubeadm kubectl
-  SHELL
+  config.vm.provision "shell", inline: $common_script
 end
