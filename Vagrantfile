@@ -25,10 +25,10 @@ Vagrant.configure("2") do |config|
     node2.vm.network :private_network, ip: "192.168.121.202"
   end
 
-  config.vm.define vm_name = "node3" do |node3|
-    node3.vm.hostname = "n3"
-    node3.vm.network :private_network, ip: "192.168.121.203"
-  end
+  # config.vm.define vm_name = "node3" do |node3|
+  #   node3.vm.hostname = "n3"
+  #   node3.vm.network :private_network, ip: "192.168.121.203"
+  # end
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
