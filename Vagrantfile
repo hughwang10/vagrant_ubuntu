@@ -46,7 +46,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define vm_name = "w1" do |w1|
-    w1.vm.hostname = "w2"
+    w1.vm.hostname = "w1"
     w1.vm.network :private_network, ip: "192.168.121.202"
   end
 
