@@ -16,13 +16,17 @@ apt-get install -y kubelet kubeadm kubectl
 SCRIPT
 
 $ctrl_script = <<SCRIPT
-sudo cp /etc/kubernetes/admin.conf $HOME/
-sudo chown $(id -u):$(id -g) $HOME/admin.conf
-export KUBECONFIG=$HOME/admin.conf
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=192.168.121.201
+mkdir -p $HOME/.kube
+sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+mkdir -p /home/vagrant/.kube
+sudo cp /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+sudo chown vagrant:vagrant /home/vagrant/.kube/config
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
-kubectl taint nodes --all node-role.kubernetes.io/master
+# kubectl taint nodes --all node-role.kubernetes.io/master
+kubectl version
 SCRIPT
 
 Vagrant.configure("2") do |config|
