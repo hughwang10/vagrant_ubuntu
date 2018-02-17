@@ -39,14 +39,14 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
 
   config.vm.define vm_name = "c1" do |c1|
-    c1.vm.hostname = "n1"
+    c1.vm.hostname = "c1"
     c1.vm.network :private_network, ip: "192.168.121.201"
     c1.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
     c1.vm.provision "shell", inline: $ctrl_script
   end
 
   config.vm.define vm_name = "w1" do |w1|
-    w1.vm.hostname = "n2"
+    w1.vm.hostname = "w2"
     w1.vm.network :private_network, ip: "192.168.121.202"
   end
 
