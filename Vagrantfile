@@ -23,9 +23,12 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 mkdir -p /home/vagrant/.kube
 sudo cp /etc/kubernetes/admin.conf /home/vagrant/.kube/config
 sudo chown vagrant:vagrant /home/vagrant/.kube/config
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
-# kubectl taint nodes --all node-role.kubernetes.io/master
+#select pod network: canal
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.7/rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.7/canal.yaml
+# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl version
 SCRIPT
 
@@ -38,17 +41,23 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "ubuntu/xenial64"
 
+  config.vm.provider :virtualbox do |vb|
+    vb.cpus = 2
+    vb.gui = false
+    vb.memory = 2048
+  end
+
   config.vm.define vm_name = "c1" do |c1|
     c1.vm.hostname = "c1"
-    c1.vm.network :private_network, ip: "192.168.121.201"
+    c1.vm.network :private_network, ip: "192.168.121.201",nic_type: "virtio"
     c1.vm.network "forwarded_port", guest: 8001, host: 8001, host_ip: "127.0.0.1"
     c1.vm.provision "shell", inline: $ctrl_script
   end
 
-  config.vm.define vm_name = "w1" do |w1|
-    w1.vm.hostname = "w1"
-    w1.vm.network :private_network, ip: "192.168.121.202"
-  end
+  # config.vm.define vm_name = "w1" do |w1|
+  #   w1.vm.hostname = "w1"
+  #   w1.vm.network :private_network, ip: "192.168.121.202"
+  # end
 
   # config.vm.define vm_name = "node3" do |node3|
   #   node3.vm.hostname = "n3"
