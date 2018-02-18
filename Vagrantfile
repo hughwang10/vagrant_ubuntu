@@ -26,8 +26,6 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 #select pod network: canal
 kubectl apply -f /vagrant/rbac.yaml
 kubectl apply -f /vagrant/canal.yaml
-# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl version
 SCRIPT
@@ -54,10 +52,10 @@ Vagrant.configure("2") do |config|
     c1.vm.provision "shell", inline: $ctrl_script
   end
 
-  # config.vm.define vm_name = "w1" do |w1|
-  #   w1.vm.hostname = "w1"
-  #   w1.vm.network :private_network, ip: "192.168.121.202"
-  # end
+  config.vm.define vm_name = "w1" do |w1|
+    w1.vm.hostname = "w1"
+    w1.vm.network :private_network, ip: "192.168.121.202"
+  end
 
   # config.vm.define vm_name = "node3" do |node3|
   #   node3.vm.hostname = "n3"
