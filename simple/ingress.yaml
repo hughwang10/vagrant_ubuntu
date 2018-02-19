@@ -1,18 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: simple-ingress
-  namespace: default
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    ingress.kubernetes.io/rewrite-target: /
-    ingress.kubernetes.io/ssl-redirect: "true"
-    ingress.kubernetes.io/use-port-in-redirects: "true"
+  name: nginx
 spec:
   rules:
     - http:
         paths:
-          - path: /test
-            backend:
-              serviceName: simple-service
+          - backend:
+              serviceName: nginx
               servicePort: 80
