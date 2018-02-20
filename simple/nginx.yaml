@@ -1,3 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+  labels:
+    name: nginx  
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      nodePort: 30000
+  selector:
+    name: nginx
+---
 apiVersion: v1
 kind: Pod
 metadata:

@@ -23,9 +23,11 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 mkdir -p /home/vagrant/.kube
 sudo cp /etc/kubernetes/admin.conf /home/vagrant/.kube/config
 sudo chown vagrant:vagrant /home/vagrant/.kube/config
-#select pod network: canal
+# canal
 kubectl apply -f /vagrant/rbac.yaml
 kubectl apply -f /vagrant/canal.yaml
+# weave net
+# kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl version
 SCRIPT
