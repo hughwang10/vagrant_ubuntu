@@ -29,7 +29,7 @@ kubectl apply -f /vagrant/canal.yaml
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl version
 # Helm
-curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > /var/tmp/get_helm.sh
+curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > /var/tmp/get_helm.sh
 chmod 700 /var/tmp/get_helm.sh
 /var/tmp/get_helm.sh
 SCRIPT
