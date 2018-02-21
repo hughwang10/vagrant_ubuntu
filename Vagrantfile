@@ -26,10 +26,12 @@ sudo chown vagrant:vagrant /home/vagrant/.kube/config
 # canal
 kubectl apply -f /vagrant/rbac.yaml
 kubectl apply -f /vagrant/canal.yaml
-# weave net
-# kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 kubectl taint nodes --all node-role.kubernetes.io/master-
 kubectl version
+# Helm
+curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > /var/tmp/get_helm.sh
+chmod 700 /var/tmp/get_helm.sh
+/var/tmp/get_helm.sh
 SCRIPT
 
 Vagrant.configure("2") do |config|
