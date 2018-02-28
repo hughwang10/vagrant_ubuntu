@@ -1,2 +1,4 @@
 .vagrant
 *.log
+kolla-ansible/
+kolla-kubernetes/
