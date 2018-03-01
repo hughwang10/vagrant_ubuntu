@@ -13,6 +13,8 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" >/etc/apt/sources.list.d/kubernetes.list
 apt-get update
 apt-get install -y kubelet kubeadm kubectl
+echo "192.168.121.201 c1" | sudo tee -a /etc/hosts
+echo "192.168.121.202 w1" | sudo tee -a /etc/hosts
 SCRIPT
 
 $ctrl_script = <<SCRIPT
@@ -32,6 +34,8 @@ kubectl version
 curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > /var/tmp/get_helm.sh
 chmod 700 /var/tmp/get_helm.sh
 /var/tmp/get_helm.sh
+su -c 'helm init' vagrant
+su -c 'helm version' vagrant
 SCRIPT
 
 Vagrant.configure("2") do |config|
