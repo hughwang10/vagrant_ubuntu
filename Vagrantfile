@@ -35,7 +35,9 @@ curl -s https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > /
 chmod 700 /var/tmp/get_helm.sh
 /var/tmp/get_helm.sh
 su -c 'helm init' vagrant
-su -c 'helm version' vagrant
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
 SCRIPT
 
 Vagrant.configure("2") do |config|

@@ -2,3 +2,4 @@
 *.log
 kolla-ansible/
 kolla-kubernetes/
+heapster/
